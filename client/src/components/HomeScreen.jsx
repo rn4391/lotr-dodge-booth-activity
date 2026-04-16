@@ -18,15 +18,23 @@ const S = {
     inset: 0,
     background: 'rgba(0,0,0,0.55)',
   },
-  content: {
+  layout: {
     position: 'relative',
     zIndex: 1,
-    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 1200,
+    padding: '0 48px',
+    gap: 32,
+  },
+  // Left 60%
+  left: {
+    flex: '0 0 60%',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 16,
-    padding: '0 24px',
   },
   title: {
     fontFamily: "'Cinzel', serif",
@@ -34,20 +42,15 @@ const S = {
     color: '#D4AF37',
     lineHeight: 1.1,
     textShadow: '0 2px 20px rgba(0,0,0,0.8)',
+    margin: 0,
   },
   subtitle: {
     fontFamily: "'MedievalSharp', 'Cinzel', serif",
-    fontSize: 'clamp(42px, 7vw, 84px)',
+    fontSize: 'clamp(36px, 6vw, 76px)',
     color: '#C8B89A',
     textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-    marginTop: 4,
-  },
-  body: {
-    fontFamily: "'DM Mono', monospace",
-    fontSize: 20,
-    color: '#A09070',
-    lineHeight: 1.8,
-    marginTop: 12,
+    margin: '4px 0 0 0',
+    lineHeight: 1.1,
   },
   highScore: {
     fontFamily: "'DM Mono', monospace",
@@ -69,6 +72,56 @@ const S = {
     cursor: 'pointer',
     letterSpacing: '0.06em',
     transition: 'transform 0.15s ease, background 0.15s ease',
+  },
+  // Right 40%
+  right: {
+    flex: '0 0 40%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+  },
+  rewardHeader: {
+    fontFamily: "'Cinzel', serif",
+    fontSize: 33,
+    fontWeight: 700,
+    color: '#D4AF37',
+    letterSpacing: '0.12em',
+    textTransform: 'uppercase',
+    marginBottom: 4,
+    opacity: 0.8,
+  },
+  rewardCard: {
+    background: 'rgba(10, 6, 2, 0.72)',
+    border: '1px solid rgba(212, 175, 55, 0.35)',
+    borderRadius: 6,
+    padding: '20px 24px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
+  },
+  rewardBadge: {
+    fontFamily: "'Cinzel', serif",
+    fontSize: 14,
+    fontWeight: 700,
+    letterSpacing: '0.1em',
+    textTransform: 'uppercase',
+    padding: '3px 10px',
+    borderRadius: 2,
+    alignSelf: 'flex-start',
+  },
+  rewardTitle: {
+    fontFamily: "'MedievalSharp', 'Cinzel', serif",
+    fontSize: 'clamp(20px, 2.5vw, 28px)',
+    color: '#C8B89A',
+    margin: 0,
+    lineHeight: 1.3,
+  },
+  rewardDesc: {
+    fontFamily: "'DM Mono', monospace",
+    fontSize: 20,
+    color: '#A09070',
+    margin: 0,
+    lineHeight: 1.6,
   },
 };
 
@@ -96,35 +149,82 @@ export default function HomeScreen({ onStart }) {
       }}
     >
       <div style={S.overlay} />
-      <div style={S.content}>
-        <h1 style={S.title}>One Does Not Simply...</h1>
-        <h2 style={S.subtitle}>...Dodge Saruman's Fire</h2>
 
-        <p style={S.body}>
-          Score more than 5 to enter the lucky draw.
-          <br />
-          Highest score gets Claude Max 5× (3 months).
-        </p>
+      <div style={S.layout}>
+        {/* Left: heading + CTA */}
+        <div style={S.left}>
+          <h1 style={S.title}>One Does Not Simply...</h1>
+          <h2 style={S.subtitle}>...Dodge Saruman's Fire</h2>
 
-        {topScore && (
-          <p style={S.highScore}>
-            Today's best: {topScore.score} pts — {topScore.name}
-          </p>
-        )}
+          {topScore && (
+            <p style={S.highScore}>
+              Today's best: {topScore.score} pts — {topScore.name}
+            </p>
+          )}
 
-        <button
-          style={{
-            ...S.btn,
-            ...(btnHover
-              ? { background: '#E8C84A', transform: 'scale(1.02)' }
-              : {}),
-          }}
-          onMouseEnter={() => setBtnHover(true)}
-          onMouseLeave={() => setBtnHover(false)}
-          onClick={onStart}
-        >
-          BEGIN YOUR QUEST →
-        </button>
+          <button
+            style={{
+              ...S.btn,
+              ...(btnHover
+                ? { background: '#E8C84A', transform: 'scale(1.02)' }
+                : {}),
+            }}
+            onMouseEnter={() => setBtnHover(true)}
+            onMouseLeave={() => setBtnHover(false)}
+            onClick={onStart}
+          >
+            BEGIN YOUR QUEST →
+          </button>
+        </div>
+
+        {/* Right: rewards */}
+        <div style={S.right}>
+          <p style={S.rewardHeader}>Rewards</p>
+
+          {/* Reward 1 — Lucky Draw */}
+          <div style={S.rewardCard}>
+            <span
+              style={{
+                ...S.rewardBadge,
+                background: 'rgba(212,175,55,0.15)',
+                color: '#D4AF37',
+                border: '1px solid rgba(212,175,55,0.4)',
+              }}
+            >
+              Score &gt; 5
+            </span>
+            <h3 style={S.rewardTitle}>Enter the Lucky Draw</h3>
+            <p style={S.rewardDesc}>
+              Win the <strong style={{ color: '#C8B89A' }}>Rivendell Lego Set</strong> — score
+              more than 5 to get your name in the draw.
+            </p>
+          </div>
+
+          {/* Reward 2 — Top Score */}
+          <div
+            style={{
+              ...S.rewardCard,
+              border: '1px solid rgba(212,175,55,0.65)',
+              background: 'rgba(20,12,2,0.8)',
+            }}
+          >
+            <span
+              style={{
+                ...S.rewardBadge,
+                background: 'rgba(212,175,55,0.15)',
+                color: '#D4AF37',
+                border: '1px solid rgba(212,175,55,0.4)',
+              }}
+            >
+              Highest Score
+            </span>
+            <h3 style={S.rewardTitle}>Claude Max 5×</h3>
+            <p style={S.rewardDesc}>
+              <strong style={{ color: '#C8B89A' }}>3-month Claude Max 5×</strong> subscription
+              goes to the player with the highest score of the day.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
