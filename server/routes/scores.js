@@ -115,7 +115,15 @@ router.post('/draw', async (req, res) => {
       return res.status(404).json({ error: 'No qualifying entries found' });
     }
 
-    const winner = qualified[Math.floor(Math.random() * qualified.length)];
+    // Deduplicate by email — each person gets one ticket
+    const seen = new Set();
+    const unique = qualified.filter(e => {
+      if (seen.has(e.email)) return false;
+      seen.add(e.email);
+      return true;
+    });
+
+    const winner = unique[Math.floor(Math.random() * unique.length)];
     res.json({ winner: { name: winner.name, email: winner.email, score: winner.score } });
   } catch (err) {
     res.status(500).json({ error: err.message });
