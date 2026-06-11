@@ -287,7 +287,7 @@ export default function EndScreen({ result, onRetry, onLeaderboard }) {
               }}
               disabled={submitting || !awareness}
             >
-              {submitting ? 'Submitting...' : 'Claim My Draw Ticket →'}
+              {submitting ? 'Submitting...' : 'Submit →'}
             </button>
           </form>
         ) : (
