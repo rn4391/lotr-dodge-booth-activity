@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import bgImg from '../assets/lotr-background.jpg';
+import bgImg from '../assets/background.jpg';
 import imagekitLogo from '../assets/ice-logo.png';
 
 const S = {
@@ -15,7 +15,7 @@ const S = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  overlay: { position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.70)' },
+  overlay: { position: 'absolute', inset: 0, background: 'rgba(3,7,18,0.72)' },
   content: {
     position: 'relative',
     zIndex: 1,
@@ -24,9 +24,9 @@ const S = {
     maxWidth: 700,
   },
   preTitle: {
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 'clamp(18px, 2.5vw, 28px)',
-    color: '#D4AF37',
+    color: '#22D3EE',
     marginBottom: 24,
     textShadow: '0 2px 12px rgba(0,0,0,0.8)',
   },
@@ -39,32 +39,32 @@ const S = {
     justifyContent: 'center',
   },
   reelText: {
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 'clamp(32px, 5vw, 58px)',
     color: '#fff',
     fontWeight: 700,
     letterSpacing: '0.04em',
-    textShadow: '0 2px 20px rgba(212,175,55,0.6)',
+    textShadow: '0 2px 20px rgba(34,211,238,0.6)',
   },
   winnerName: {
-    fontFamily: "'MedievalSharp', 'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 'clamp(42px, 7vw, 80px)',
-    color: '#D4AF37',
+    color: '#22D3EE',
     fontWeight: 700,
     marginBottom: 16,
-    textShadow: '0 0 40px rgba(212,175,55,0.5)',
+    textShadow: '0 0 40px rgba(34,211,238,0.5)',
     animation: 'fadeInScale 0.6s ease',
   },
   sub: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 16,
-    color: '#C8B89A',
+    color: '#CBD5E1',
     marginBottom: 24,
   },
   stats: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 13,
-    color: '#A09070',
+    color: '#94A3B8',
     marginBottom: 32,
   },
   logos: {
@@ -77,8 +77,8 @@ const S = {
   closeBtn: {
     padding: '12px 28px',
     background: 'transparent',
-    color: '#C8B89A',
-    border: '1px solid rgba(200,184,154,0.4)',
+    color: '#CBD5E1',
+    border: '1px solid rgba(34,211,238,0.4)',
     borderRadius: 3,
     fontFamily: "'DM Mono', monospace",
     fontSize: 13,
@@ -112,7 +112,7 @@ export default function LuckyDraw({ onClose, stats }) {
         if (namesRef.current.length === 0) namesRef.current = ['No entries yet'];
       })
       .catch(() => {
-        namesRef.current = ['Frodo', 'Gandalf', 'Aragorn', 'Legolas'];
+        namesRef.current = ['Ada', 'Linus', 'Grace', 'Alan'];
       });
 
     // Roll names fast
@@ -170,7 +170,7 @@ export default function LuckyDraw({ onClose, stats }) {
       <div style={S.content}>
         {phase === 'rolling' && (
           <>
-            <p style={S.preTitle}>The Ring-bearer of the Draw is...</p>
+            <p style={S.preTitle}>The lucky committer is...</p>
             <div style={S.reel}>
               <span style={{ ...S.reelText, filter: 'blur(1px)' }}>
                 {displayName}
@@ -181,9 +181,9 @@ export default function LuckyDraw({ onClose, stats }) {
 
         {phase === 'reveal' && (
           <>
-            <p style={S.preTitle}>The Ring-bearer of the Draw is...</p>
+            <p style={S.preTitle}>The lucky committer is...</p>
             <div style={S.winnerName}>{winner ? winner.name : displayName}</div>
-            <p style={S.sub}>Claim your LOTR Lego Set at the booth desk</p>
+            <p style={S.sub}>Claim your Lego Set at the booth desk</p>
             {stats && (
               <p style={S.stats}>
                 {stats.totalPlayers} players · {stats.totalImagekitCollected} ImageKit logos
@@ -194,21 +194,12 @@ export default function LuckyDraw({ onClose, stats }) {
         )}
 
         <div style={S.logos}>
-          <span
-            style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: 13,
-              color: '#A09070',
-            }}
-          >
-            CityJS London
-          </span>
           <img src={imagekitLogo} alt="ImageKit" style={{ height: 24, opacity: 0.8 }} />
           <span
             style={{
               fontFamily: "'DM Mono', monospace",
               fontSize: 13,
-              color: '#A09070',
+              color: '#94A3B8',
             }}
           >
             ImageKit.io

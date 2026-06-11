@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import bgImg from '../assets/lotr-background.jpg';
-import imagekitLogo from '../assets/ice-logo.png';
+import bgImg from '../assets/background.jpg';
 
 const S = {
   root: {
@@ -24,9 +23,9 @@ const S = {
     padding: '40px 0',
   },
   title: {
-    fontFamily: "'MedievalSharp', 'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 'clamp(32px, 5vw, 56px)',
-    color: '#D4AF37',
+    color: '#22D3EE',
     textAlign: 'center',
     marginBottom: 32,
     textShadow: '0 2px 12px rgba(0,0,0,0.8)',
@@ -36,14 +35,14 @@ const S = {
     borderCollapse: 'collapse',
     fontFamily: "'DM Mono', monospace",
     fontSize: 18,
-    color: '#C8B89A',
+    color: '#CBD5E1',
     marginBottom: 32,
   },
   th: {
-    borderBottom: '1px solid rgba(212,175,55,0.4)',
+    borderBottom: '1px solid rgba(34,211,238,0.4)',
     padding: '10px 16px',
     textAlign: 'left',
-    color: '#D4AF37',
+    color: '#22D3EE',
     fontWeight: 500,
     fontSize: 13,
     letterSpacing: '0.08em',
@@ -56,23 +55,23 @@ const S = {
   },
   prizesRow: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '1fr',
     gap: 16,
     marginBottom: 32,
   },
   prizeCard: {
-    background: 'rgba(0,0,0,0.5)',
-    border: '1px solid rgba(212,175,55,0.4)',
+    background: 'rgba(8,14,26,0.78)',
+    border: '1px solid rgba(34,211,238,0.4)',
     borderRadius: 3,
     padding: '20px 24px',
     fontFamily: "'DM Mono', monospace",
     fontSize: 16,
-    color: '#C8B89A',
+    color: '#CBD5E1',
   },
   prizeTitle: {
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 18,
-    color: '#D4AF37',
+    color: '#22D3EE',
     fontWeight: 700,
     marginBottom: 8,
   },
@@ -83,11 +82,11 @@ const S = {
   },
   btn: {
     padding: '15px 36px',
-    background: '#D4AF37',
-    color: '#1A0A00',
-    border: '2px solid #8B6914',
+    background: '#22D3EE',
+    color: '#06121A',
+    border: '2px solid #0E7490',
     borderRadius: 3,
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 16,
     fontWeight: 700,
     cursor: 'pointer',
@@ -130,7 +129,7 @@ export default function Leaderboard({ onPlayAgain }) {
     <div style={S.root}>
       <div style={S.overlay} />
       <div style={S.inner}>
-        <h2 style={S.title}>The Fellowship of Scores</h2>
+        <h2 style={S.title}>Top Developers</h2>
 
         <table style={S.table}>
           <thead>
@@ -147,21 +146,14 @@ export default function Leaderboard({ onPlayAgain }) {
               <tr
                 key={s._id || i}
                 style={{
-                  background: i === 0 ? 'rgba(212,175,55,0.15)' : 'transparent',
-                  color: i === 0 ? '#D4AF37' : '#C8B89A',
+                  background: i === 0 ? 'rgba(34,211,238,0.15)' : 'transparent',
+                  color: i === 0 ? '#22D3EE' : '#CBD5E1',
                   fontSize: i === 0 ? 20 : 18,
                 }}
               >
                 <td style={S.td}>{i === 0 ? '🏆' : i + 1}</td>
                 <td style={S.td}>
                   {s.name}
-                  {s.imagekitCollected > 0 && (
-                    <img
-                      src={imagekitLogo}
-                      alt="ik"
-                      style={{ width: 16, height: 16, marginLeft: 8, verticalAlign: 'middle', opacity: 0.8 }}
-                    />
-                  )}
                 </td>
                 <td style={{ ...S.td, fontWeight: i === 0 ? 700 : 400 }}>{s.score}</td>
                 <td style={S.td}>{s.fireballsDodged || 0}</td>
@@ -170,7 +162,7 @@ export default function Leaderboard({ onPlayAgain }) {
             ))}
             {scores.length === 0 && (
               <tr>
-                <td colSpan={5} style={{ ...S.td, textAlign: 'center', color: '#7A6040', padding: 32, fontSize: 18 }}>
+                <td colSpan={5} style={{ ...S.td, textAlign: 'center', color: '#64748B', padding: 32, fontSize: 18 }}>
                   No scores yet. Be the first!
                 </td>
               </tr>
@@ -181,17 +173,12 @@ export default function Leaderboard({ onPlayAgain }) {
         <div style={S.prizesRow}>
           <div style={S.prizeCard}>
             <div style={S.prizeTitle}>🏆 Top Score Prize</div>
-            <div>Claude Max × 5 — 3 months</div>
+            <div>Mac Mini M4 — to the highest scorer of the day</div>
             {topScore && (
-              <div style={{ marginTop: 10, color: '#D4AF37', fontSize: 15 }}>
+              <div style={{ marginTop: 10, color: '#22D3EE', fontSize: 15 }}>
                 Current leader: {topScore.score} — {topScore.name}
               </div>
             )}
-          </div>
-          <div style={S.prizeCard}>
-            <div style={S.prizeTitle}>🎟 Lucky Draw Prize</div>
-            <div>LOTR Lego Set</div>
-            <div style={{ marginTop: 6, color: '#A09070', fontSize: 14 }}>Draw at end of day</div>
           </div>
         </div>
 

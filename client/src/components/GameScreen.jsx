@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useCallback } from 'react';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const GROUND_RATIO = 0.75;
-const FRODO_HEIGHT = 110;
-const SARUMAN_HEIGHT = 160;
-const PROJECTILE_SIZE = 50;
-const IMAGEKIT_SIZE = 44;
-const JUMP_HEIGHT   = 220;   // max peak px above ground
+const DEV_HEIGHT = 153;
+const QA_HEIGHT = 213;
+const PROJECTILE_SIZE = 56;
+const IMAGEKIT_SIZE = 48;
+const JUMP_HEIGHT   = 300;   // max peak px above ground
 const MIN_JUMP_UP   = 130;   // ms — min up-phase (tap)
-const MAX_JUMP_UP   = 400;   // ms — up-phase when held to max
-const JUMP_DOWN_DUR = 600;   // ms — fall duration
+const MAX_JUMP_UP   = 450;   // ms — up-phase when held to max
+const JUMP_DOWN_DUR = 680;   // ms — fall duration
 const IMAGEKIT_SPAWN_CHANCE = 0.36;
 const BASE_SPEED      = 9;
 const SPEED_INCREMENT = 2.5;  // added per tier
@@ -62,7 +62,7 @@ export default function GameScreen({ onGameEnd }) {
     return {
       imgs,
       groundY,
-      frodo: {
+      dev: {
         x: canvas.width * 0.15,
         yOffset: 0,
         isJumping: false,
@@ -72,9 +72,9 @@ export default function GameScreen({ onGameEnd }) {
         jumpBuffered: false,
         jumpBufferTime: 0,
       },
-      saruman: {
+      qa: {
         x: canvas.width * 0.72,
-        y: groundY - SARUMAN_HEIGHT,
+        y: groundY - QA_HEIGHT,
       },
       projectiles: [],
       score: 0,
@@ -104,40 +104,40 @@ export default function GameScreen({ onGameEnd }) {
       canvas.height = window.innerHeight;
       if (stateRef.current) {
         stateRef.current.groundY = canvas.height * GROUND_RATIO;
-        stateRef.current.frodo.x = canvas.width * 0.15;
-        stateRef.current.saruman.x = canvas.width * 0.72;
-        stateRef.current.saruman.y = stateRef.current.groundY - SARUMAN_HEIGHT;
+        stateRef.current.dev.x = canvas.width * 0.15;
+        stateRef.current.qa.x = canvas.width * 0.72;
+        stateRef.current.qa.y = stateRef.current.groundY - QA_HEIGHT;
       }
     };
     resize();
     window.addEventListener('resize', resize);
 
     // Show loading
-    ctx.fillStyle = '#0d0600';
+    ctx.fillStyle = '#0a0e1a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#D4AF37';
+    ctx.fillStyle = '#22D3EE';
     ctx.font = "20px 'DM Mono', monospace";
     ctx.textAlign = 'center';
-    ctx.fillText('Loading...', canvas.width / 2, canvas.height / 2);
+    ctx.fillText('Compiling...', canvas.width / 2, canvas.height / 2);
 
     // Load assets
     const assetPaths = {
-      bg: new URL('../assets/lotr-background.jpg', import.meta.url).href,
-      frodo: new URL('../assets/frodo.png', import.meta.url).href,
-      saruman: new URL('../assets/saruman.png', import.meta.url).href,
-      fireball: new URL('../assets/fireball.png', import.meta.url).href,
+      bg: new URL('../assets/background.jpg', import.meta.url).href,
+      dev: new URL('../assets/dev.png', import.meta.url).href,
+      qa: new URL('../assets/qa.png', import.meta.url).href,
+      bug: new URL('../assets/bug.png', import.meta.url).href,
       imagekit: new URL('../assets/ice-logo.png', import.meta.url).href,
     };
 
     Promise.all([
       loadImage(assetPaths.bg),
-      loadImage(assetPaths.frodo),
-      loadImage(assetPaths.saruman),
-      loadImage(assetPaths.fireball),
+      loadImage(assetPaths.dev),
+      loadImage(assetPaths.qa),
+      loadImage(assetPaths.bug),
       loadImage(assetPaths.imagekit),
     ])
-      .then(([bg, frodo, saruman, fireball, imagekit]) => {
-        const imgs = { bg, frodo, saruman, fireball, imagekit };
+      .then(([bg, dev, qa, bug, imagekit]) => {
+        const imgs = { bg, dev, qa, fireball: bug, imagekit };
         stateRef.current = initState(canvas, imgs);
 
         // Fetch top score
@@ -154,7 +154,7 @@ export default function GameScreen({ onGameEnd }) {
       })
       .catch(() => {
         // Assets missing — run without images (stub)
-        const imgs = { bg: null, frodo: null, saruman: null, fireball: null, imagekit: null };
+        const imgs = { bg: null, dev: null, qa: null, fireball: null, imagekit: null };
         stateRef.current = initState(canvas, imgs);
         startGame();
       });
@@ -163,11 +163,11 @@ export default function GameScreen({ onGameEnd }) {
     const JUMP_BUFFER_MS = 150; // buffer window to catch pre-landing inputs
 
     function startJump(s) {
-      s.frodo.isJumping = true;
-      s.frodo.jumpStart = performance.now();
-      s.frodo.spaceHeld = true;
-      s.frodo.upDuration = MAX_JUMP_UP;
-      s.frodo.jumpBuffered = false;
+      s.dev.isJumping = true;
+      s.dev.jumpStart = performance.now();
+      s.dev.spaceHeld = true;
+      s.dev.upDuration = MAX_JUMP_UP;
+      s.dev.jumpBuffered = false;
     }
 
     function onKeyDown(e) {
@@ -175,10 +175,10 @@ export default function GameScreen({ onGameEnd }) {
       e.preventDefault();
       const s = stateRef.current;
       if (!s || s.dead) return;
-      if (s.frodo.isJumping) {
+      if (s.dev.isJumping) {
         // Buffer the input — fire on landing if within window
-        s.frodo.jumpBuffered = true;
-        s.frodo.jumpBufferTime = performance.now();
+        s.dev.jumpBuffered = true;
+        s.dev.jumpBufferTime = performance.now();
       } else {
         startJump(s);
       }
@@ -188,10 +188,10 @@ export default function GameScreen({ onGameEnd }) {
       if (e.code !== 'Space') return;
       e.preventDefault();
       const s = stateRef.current;
-      if (!s || !s.frodo.spaceHeld) return;
-      const elapsed = performance.now() - s.frodo.jumpStart;
-      s.frodo.upDuration = Math.min(Math.max(elapsed, MIN_JUMP_UP), MAX_JUMP_UP);
-      s.frodo.spaceHeld = false;
+      if (!s || !s.dev.spaceHeld) return;
+      const elapsed = performance.now() - s.dev.jumpStart;
+      s.dev.upDuration = Math.min(Math.max(elapsed, MIN_JUMP_UP), MAX_JUMP_UP);
+      s.dev.spaceHeld = false;
     }
 
     window.addEventListener('keydown', onKeyDown);
@@ -215,11 +215,11 @@ export default function GameScreen({ onGameEnd }) {
       const isImageKit = iceEligible && Math.random() < IMAGEKIT_SPAWN_CHANCE;
       const type = isImageKit ? 'imagekit' : 'fire';
       const size = type === 'imagekit' ? IMAGEKIT_SIZE : PROJECTILE_SIZE;
-      // Spawn from Saruman's wand — right edge of his sprite, low (wand/hand height)
-      const sarumanW = s.imgs.saruman
-        ? Math.round(SARUMAN_HEIGHT * s.imgs.saruman.naturalWidth / s.imgs.saruman.naturalHeight)
+      // Spawn from QA's terminal — right edge of the sprite, low (hand height)
+      const qaW = s.imgs.qa
+        ? Math.round(QA_HEIGHT * s.imgs.qa.naturalWidth / s.imgs.qa.naturalHeight)
         : 150;
-      const spawnX = s.saruman.x;
+      const spawnX = s.qa.x;
       const spawnY = s.groundY - size / 2 - 20;
       s.projectiles.push({
         type,
@@ -245,7 +245,7 @@ export default function GameScreen({ onGameEnd }) {
         setTimeout(() => {
           const s2 = stateRef.current;
           if (!s2 || s2.dead) return;
-          const spawnX2 = s2.saruman.x;
+          const spawnX2 = s2.qa.x;
           const spawnY2 = s2.groundY - PROJECTILE_SIZE / 2 - 20;
           s2.projectiles.push({
             type: 'fire',
@@ -326,8 +326,8 @@ export default function GameScreen({ onGameEnd }) {
     // ── Draw HUD ──────────────────────────────────────────────────────────────
     function drawHUD(s) {
       // Score
-      ctx.font = "bold 28px 'Cinzel', serif";
-      ctx.fillStyle = '#D4AF37';
+      ctx.font = "bold 28px 'Orbitron', sans-serif";
+      ctx.fillStyle = '#22D3EE';
       ctx.shadowColor = 'rgba(0,0,0,0.8)';
       ctx.shadowBlur = 6;
       ctx.textAlign = 'left';
@@ -338,8 +338,8 @@ export default function GameScreen({ onGameEnd }) {
       const multiplier = tier + 1;
       if (multiplier > 1) {
         ctx.textAlign = 'center';
-        ctx.font = "bold 22px 'Cinzel', serif";
-        ctx.fillStyle = '#D4AF37';
+        ctx.font = "bold 22px 'Orbitron', sans-serif";
+        ctx.fillStyle = '#22D3EE';
         ctx.fillText(`×${multiplier}`, canvas.width / 2, 50);
       }
 
@@ -347,7 +347,7 @@ export default function GameScreen({ onGameEnd }) {
       if (s.topScore) {
         ctx.textAlign = 'right';
         ctx.font = "14px 'DM Mono', monospace";
-        ctx.fillStyle = '#C8B89A';
+        ctx.fillStyle = '#CBD5E1';
         ctx.fillText(
           `Best: ${s.topScore.score} — ${s.topScore.name}`,
           canvas.width - 24,
@@ -369,7 +369,7 @@ export default function GameScreen({ onGameEnd }) {
         const y = ft.y - progress * 60;
         ctx.globalAlpha = alpha;
         ctx.font = "bold 18px 'DM Mono', monospace";
-        ctx.fillStyle = '#D4AF37';
+        ctx.fillStyle = '#22D3EE';
         ctx.textAlign = 'center';
         ctx.fillText(ft.text, ft.x, y);
         ctx.globalAlpha = 1;
@@ -393,83 +393,83 @@ export default function GameScreen({ onGameEnd }) {
       if (s.imgs.bg) {
         ctx.drawImage(s.imgs.bg, 0, 0, canvas.width, canvas.height);
       } else {
-        ctx.fillStyle = '#0d0600';
+        ctx.fillStyle = '#0a0e1a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
-      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillStyle = 'rgba(3,7,18,0.35)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
 
-      // ── Saruman glow
-      const sarumanDrawW = s.imgs.saruman
-        ? Math.round(SARUMAN_HEIGHT * s.imgs.saruman.naturalWidth / s.imgs.saruman.naturalHeight)
+      // ── QA glow
+      const qaDrawW = s.imgs.qa
+        ? Math.round(QA_HEIGHT * s.imgs.qa.naturalWidth / s.imgs.qa.naturalHeight)
         : 150;
-      const glowCx = s.saruman.x + sarumanDrawW / 2;
-      const glowCy = s.saruman.y + SARUMAN_HEIGHT / 2;
+      const glowCx = s.qa.x + qaDrawW / 2;
+      const glowCy = s.qa.y + QA_HEIGHT / 2;
       const grd = ctx.createRadialGradient(glowCx, glowCy, 10, glowCx, glowCy, 160);
       const pulse = 0.15 + 0.08 * Math.sin(now / 400);
-      grd.addColorStop(0, `rgba(255,50,0,${pulse})`);
-      grd.addColorStop(1, 'rgba(255,50,0,0)');
+      grd.addColorStop(0, `rgba(248,113,113,${pulse})`);
+      grd.addColorStop(1, 'rgba(248,113,113,0)');
       ctx.fillStyle = grd;
-      ctx.fillRect(s.saruman.x - 80, s.saruman.y - 20, sarumanDrawW + 160, SARUMAN_HEIGHT + 40);
+      ctx.fillRect(s.qa.x - 80, s.qa.y - 20, qaDrawW + 160, QA_HEIGHT + 40);
 
-      // ── Saruman
-      if (s.imgs.saruman) {
-        ctx.drawImage(s.imgs.saruman, s.saruman.x, s.saruman.y, sarumanDrawW, SARUMAN_HEIGHT);
+      // ── QA
+      if (s.imgs.qa) {
+        ctx.drawImage(s.imgs.qa, s.qa.x, s.qa.y, qaDrawW, QA_HEIGHT);
       } else {
-        ctx.fillStyle = '#8B0000';
-        ctx.fillRect(s.saruman.x, s.saruman.y, 150, SARUMAN_HEIGHT);
+        ctx.fillStyle = '#7F1D1D';
+        ctx.fillRect(s.qa.x, s.qa.y, 150, QA_HEIGHT);
       }
 
-      // ── Update Frodo jump
-      if (s.frodo.isJumping) {
-        const elapsed = now - s.frodo.jumpStart;
+      // ── Update Dev jump
+      if (s.dev.isJumping) {
+        const elapsed = now - s.dev.jumpStart;
 
         // While held, keep extending upDuration up to max
-        if (s.frodo.spaceHeld) {
+        if (s.dev.spaceHeld) {
           if (elapsed >= MAX_JUMP_UP) {
-            s.frodo.upDuration = MAX_JUMP_UP;
-            s.frodo.spaceHeld = false;
+            s.dev.upDuration = MAX_JUMP_UP;
+            s.dev.spaceHeld = false;
           } else {
-            s.frodo.upDuration = elapsed; // still rising
+            s.dev.upDuration = elapsed; // still rising
           }
         }
 
-        const upDur = s.frodo.upDuration;
+        const upDur = s.dev.upDuration;
         const totalDur = upDur + JUMP_DOWN_DUR;
 
         if (elapsed >= totalDur) {
-          s.frodo.isJumping = false;
-          s.frodo.yOffset = 0;
+          s.dev.isJumping = false;
+          s.dev.yOffset = 0;
           // Fire buffered jump if input arrived just before landing
-          if (s.frodo.jumpBuffered && (performance.now() - s.frodo.jumpBufferTime) < JUMP_BUFFER_MS) {
+          if (s.dev.jumpBuffered && (performance.now() - s.dev.jumpBufferTime) < JUMP_BUFFER_MS) {
             startJump(s);
           }
         } else {
-          s.frodo.yOffset = getJumpOffset(elapsed, upDur, JUMP_DOWN_DUR);
+          s.dev.yOffset = getJumpOffset(elapsed, upDur, JUMP_DOWN_DUR);
         }
       }
 
-      const drawY = s.groundY - FRODO_HEIGHT - s.frodo.yOffset;
-      const frodoDrawW = s.imgs.frodo
-        ? Math.round(FRODO_HEIGHT * s.imgs.frodo.naturalWidth / s.imgs.frodo.naturalHeight)
+      const drawY = s.groundY - DEV_HEIGHT - s.dev.yOffset;
+      const devDrawW = s.imgs.dev
+        ? Math.round(DEV_HEIGHT * s.imgs.dev.naturalWidth / s.imgs.dev.naturalHeight)
         : 100;
 
-      // ── Draw Frodo
-      if (s.imgs.frodo) {
-        ctx.drawImage(s.imgs.frodo, s.frodo.x, drawY, frodoDrawW, FRODO_HEIGHT);
+      // ── Draw Dev
+      if (s.imgs.dev) {
+        ctx.drawImage(s.imgs.dev, s.dev.x, drawY, devDrawW, DEV_HEIGHT);
       } else {
-        ctx.fillStyle = '#4A7A30';
-        ctx.fillRect(s.frodo.x, drawY, frodoDrawW, FRODO_HEIGHT);
+        ctx.fillStyle = '#4ADE80';
+        ctx.fillRect(s.dev.x, drawY, devDrawW, DEV_HEIGHT);
       }
 
-      // ── Frodo hitbox (tighter than sprite)
-      const frodoHitbox = {
-        x: s.frodo.x + Math.round(frodoDrawW * 0.20),
-        y: drawY + Math.round(FRODO_HEIGHT * 0.08),
-        width: Math.round(frodoDrawW * 0.50),
-        height: Math.round(FRODO_HEIGHT * 0.75),
+      // ── Dev hitbox (tighter than sprite)
+      const devHitbox = {
+        x: s.dev.x + Math.round(devDrawW * 0.20),
+        y: drawY + Math.round(DEV_HEIGHT * 0.08),
+        width: Math.round(devDrawW * 0.50),
+        height: Math.round(DEV_HEIGHT * 0.75),
       };
 
       // ── Update & draw projectiles
@@ -480,7 +480,7 @@ export default function GameScreen({ onGameEnd }) {
 
         const pHitbox = { x: p.x, y: p.y - p.height / 2, width: p.width, height: p.height };
 
-        if (overlaps(frodoHitbox, pHitbox)) {
+        if (overlaps(devHitbox, pHitbox)) {
           if (p.type === 'fire') {
             triggerDeath();
             return;
@@ -493,19 +493,19 @@ export default function GameScreen({ onGameEnd }) {
             s.imagekitCollected++;
             s.floatingTexts.push({
               text: `+${icePoints}`,
-              x: s.frodo.x + frodoDrawW / 2,
+              x: s.dev.x + devDrawW / 2,
               y: drawY,
               born: now,
               life: 800,
             });
             // Flash
-            ctx.fillStyle = 'rgba(212,175,55,0.35)';
+            ctx.fillStyle = 'rgba(34,211,238,0.35)';
             ctx.beginPath();
             ctx.arc(p.x + p.width / 2, p.y, 40, 0, Math.PI * 2);
             ctx.fill();
           }
-        } else if (p.x + p.width < s.frodo.x) {
-          // Passed Frodo
+        } else if (p.x + p.width < s.dev.x) {
+          // Passed the Dev
           if (p.type === 'fire') {
             const fireMultiplier = Math.floor(s.totalSpawned / SPEED_TIER_SIZE) + 1;
             s.score += 1 * fireMultiplier;

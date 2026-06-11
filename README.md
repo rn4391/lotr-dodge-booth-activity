@@ -1,9 +1,9 @@
-# One Does Not Simply... Dodge
+# Dev vs QA — Dodge the Bugs
 CityJS London 2025 — ImageKit Booth Game
 
 ## Setup
 1. Drop assets into `client/src/assets/`:
-   `frodo.png`, `saruman.png`, `fireball.png`, `ice-logo.png`, `lotr-background.jpg`
+   `dev.png`, `qa.png`, `bug.png`, `ice-logo.png`, `background.jpg`, `lead.png`, `happy-lead.png`
 2. Ensure MongoDB is running locally
 3. `npm install` in project root
 4. `cd server && npm install` (express, mongoose, cors)
@@ -26,7 +26,7 @@ Click "Operator" bottom-right. Password: `cityjs2025`
 
 ## Prizes
 - **Top Score**: Claude Max × 5 (3 months) — tracked automatically on leaderboard
-- **Lucky Draw**: LOTR Lego Set — run from Operator Panel at end of day
+- **Lucky Draw**: Lego Set — run from Operator Panel at end of day
   Draw is open only to players who scored above the THRESHOLD.
 
 ## Controls

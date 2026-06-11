@@ -27,7 +27,7 @@ const operatorLinkStyle = {
   zIndex: 50,
   fontFamily: "'DM Mono', monospace",
   fontSize: 11,
-  color: 'rgba(160,144,112,0.5)',
+  color: 'rgba(148,163,184,0.5)',
   cursor: 'pointer',
   letterSpacing: '0.05em',
   background: 'none',
@@ -63,23 +63,23 @@ function Game() {
       <header style={headerStyle}>
         <span
           style={{
-            fontFamily: "'MedievalSharp', 'Cinzel', serif",
+            fontFamily: "'Orbitron', sans-serif",
             fontSize: 13,
-            color: 'rgba(160,144,112,0.55)',
-            letterSpacing: '0.02em',
+            color: 'rgba(148,163,184,0.6)',
+            letterSpacing: '0.06em',
           }}
         >
-          One Does Not Simply... Dodge
+          Dev vs QA
         </span>
         <span
           style={{
             fontFamily: "'DM Mono', monospace",
             fontSize: 11,
-            color: 'rgba(160,144,112,0.45)',
+            color: 'rgba(148,163,184,0.5)',
             letterSpacing: '0.05em',
           }}
         >
-          CityJS London &nbsp;·&nbsp; Powered by ImageKit.io
+          Powered by ImageKit.io
         </span>
       </header>
 
@@ -113,7 +113,11 @@ export default function App() {
     return <StandaloneLeaderboard />;
   }
   if (window.location.pathname === '/lucky-draw') {
-    return <LuckyDrawPage />;
+    // Lucky draw is temporarily suspended — redirect to the leaderboard for now.
+    // Keep <LuckyDrawPage /> intact for when the draw is re-enabled:
+    //   return <LuckyDrawPage />;
+    window.location.replace('/leaderboard');
+    return <StandaloneLeaderboard />;
   }
   return <Game />;
 }

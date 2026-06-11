@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import bgImg from '../assets/lotr-background.jpg';
+import bgImg from '../assets/background.jpg';
 
 const THRESHOLD = 5;
 
 const DEATH_MESSAGES = [
-  'And so it ends. The Eye of Saruman sees all.',
-  'Even the smallest fireball can change the course of the future.',
-  'One does not simply dodge forever.',
-  'The Shire weeps. Bag End is no more.',
-  'You have my axe. Unfortunately, that did not help.',
-  'Not all those who dodge are safe.',
-  'I would have followed you, my brother. My captain. My king.',
-  'A wizard is never on time. He dodges precisely when he means to.',
-  "They're taking the hobbits to Isengard... and you couldn't stop it.",
-  'Po-ta-toes could not save you now.',
+  'And so it ends. The QA lead sees all.',
+  'Even the smallest bug can change the course of a release.',
+  'One does not simply dodge every bug report.',
+  'Production is down. The build is broken.',
+  'You pushed on a Friday. Unfortunately, that did not help.',
+  'Not all those who deploy are safe.',
+  'I would have merged it for you. My reviewer. My lead.',
+  'A senior dev is never on time. They ship precisely when they mean to.',
+  "They're shipping the hotfix to prod... and you couldn't stop it.",
+  'console.log could not save you now.',
 ];
 
 const FAIL_MESSAGES = [
-  'Even Samwise would have scored higher.',
-  `The threshold is ${THRESHOLD}. Gandalf is disappointed.`,
-  'Saruman sends his regards.',
-  'You shall not pass... the score threshold.',
-  'Perhaps the Shire life was not for you either.',
+  'Even a junior dev would have scored higher.',
+  `The threshold is ${THRESHOLD}. The QA lead is disappointed.`,
+  'QA sends its regards.',
+  'Your PR shall not pass... code review.',
+  'Perhaps the dev life was not for you either.',
 ];
 
 const AWARENESS_OPTIONS = [
@@ -43,24 +43,24 @@ const S = {
     justifyContent: 'center',
     overflow: 'auto',
   },
-  overlay: { position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.60)' },
+  overlay: { position: 'absolute', inset: 0, background: 'rgba(3,7,18,0.65)' },
   card: {
     position: 'relative',
     zIndex: 1,
-    background: 'rgba(255,248,220,0.92)',
-    border: '2px solid #8B6914',
+    background: 'rgba(10,16,28,0.92)',
+    border: '2px solid #0E7490',
     borderRadius: 4,
     padding: '36px 44px',
     maxWidth: 520,
     width: '90%',
-    color: '#2A1A00',
+    color: '#E2E8F0',
     my: 40,
   },
   deathMsg: {
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'DM Mono', monospace",
     fontSize: 18,
     fontStyle: 'italic',
-    color: '#8B6914',
+    color: '#67E8F9',
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 1.5,
@@ -68,46 +68,46 @@ const S = {
   scoreBlock: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 14,
-    color: '#4A3200',
+    color: '#94A3B8',
     marginBottom: 20,
     lineHeight: 2,
   },
   bigScore: {
     fontSize: 36,
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontWeight: 700,
-    color: '#5C3A00',
+    color: '#22D3EE',
   },
   subCard: {
-    background: 'rgba(255,243,200,0.7)',
-    border: '1px solid #C8A020',
+    background: 'rgba(15,23,42,0.7)',
+    border: '1px solid rgba(34,211,238,0.3)',
     borderRadius: 3,
     padding: '20px 24px',
     marginBottom: 16,
   },
   subCardTitle: {
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 15,
-    color: '#5C3A00',
+    color: '#E2E8F0',
     marginBottom: 12,
     fontWeight: 600,
   },
   label: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 13,
-    color: '#4A3200',
+    color: '#94A3B8',
     display: 'block',
     marginBottom: 4,
   },
   input: {
     width: '100%',
-    background: 'rgba(255,248,220,0.6)',
-    border: '1px solid #8B6914',
+    background: 'rgba(15,23,42,0.6)',
+    border: '1px solid #334155',
     borderRadius: 2,
     padding: '10px 12px',
     fontFamily: "'DM Mono', monospace",
     fontSize: 14,
-    color: '#2A1A00',
+    color: '#E2E8F0',
     marginBottom: 12,
     outline: 'none',
     boxSizing: 'border-box',
@@ -118,24 +118,24 @@ const S = {
     textAlign: 'left',
     padding: '10px 14px',
     marginBottom: 6,
-    background: selected ? 'rgba(212,175,55,0.18)' : '#fff',
-    border: selected ? '1px solid #D4AF37' : '1px solid #C8A88A',
-    borderLeft: selected ? '3px solid #D4AF37' : '3px solid transparent',
+    background: selected ? 'rgba(34,211,238,0.18)' : 'rgba(15,23,42,0.6)',
+    border: selected ? '1px solid #22D3EE' : '1px solid #334155',
+    borderLeft: selected ? '3px solid #22D3EE' : '3px solid transparent',
     borderRadius: 2,
     fontFamily: "'DM Mono', monospace",
     fontSize: 13,
-    color: '#2A1A00',
+    color: '#E2E8F0',
     cursor: 'pointer',
   }),
   btn: {
     display: 'block',
     width: '100%',
     padding: '14px',
-    background: '#D4AF37',
-    color: '#1A0A00',
-    border: '2px solid #8B6914',
+    background: '#22D3EE',
+    color: '#06121A',
+    border: '2px solid #0E7490',
     borderRadius: 3,
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 15,
     fontWeight: 700,
     cursor: 'pointer',
@@ -143,10 +143,10 @@ const S = {
     marginTop: 4,
   },
   failMsg: {
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'DM Mono', monospace",
     fontSize: 16,
     fontStyle: 'italic',
-    color: '#8B6914',
+    color: '#67E8F9',
     textAlign: 'center',
     marginBottom: 16,
     lineHeight: 1.5,
@@ -154,7 +154,7 @@ const S = {
   smallNote: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 12,
-    color: '#7A5C20',
+    color: '#94A3B8',
     textAlign: 'center',
     marginTop: 10,
   },
@@ -223,20 +223,20 @@ export default function EndScreen({ result, onRetry, onLeaderboard }) {
           <div>
             Final Score: <span style={S.bigScore}>{result.score}</span>
           </div>
-          <div>Fireballs dodged: {result.fireballsDodged}</div>
+          <div>Bugs dodged: {result.fireballsDodged}</div>
         </div>
 
         {qualified ? (
           <form onSubmit={handleSubmit}>
             <div style={S.subCard}>
               <p style={S.subCardTitle}>
-                You have proven yourself worthy of the draw.
+                Your code passed QA. You're in the draw.
               </p>
               <p
                 style={{
                   fontFamily: "'DM Mono', monospace",
                   fontSize: 13,
-                  color: '#5C3A00',
+                  color: '#CBD5E1',
                   marginBottom: 14,
                 }}
               >
@@ -249,7 +249,7 @@ export default function EndScreen({ result, onRetry, onLeaderboard }) {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Frodo Baggins"
+                placeholder="Ada Lovelace"
                 required
               />
 
@@ -259,7 +259,7 @@ export default function EndScreen({ result, onRetry, onLeaderboard }) {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="frodo@theshire.me"
+                placeholder="ada@dev.io"
                 required
               />
 

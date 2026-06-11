@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import bgImg from '../assets/lotr-background.jpg';
+import bgImg from '../assets/background.jpg';
 
 const S = {
   root: {
@@ -30,24 +30,24 @@ const S = {
   },
   // Left 60%
   left: {
-    flex: '0 0 60%',
+    flex: '0 0 52%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: 16,
   },
   title: {
-    fontFamily: "'Cinzel', serif",
-    fontSize: 'clamp(20px, 3vw, 36px)',
-    color: '#D4AF37',
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 'clamp(16px, 2vw, 24px)',
+    color: '#22D3EE',
     lineHeight: 1.1,
     textShadow: '0 2px 20px rgba(0,0,0,0.8)',
     margin: 0,
   },
   subtitle: {
-    fontFamily: "'MedievalSharp', 'Cinzel', serif",
-    fontSize: 'clamp(36px, 6vw, 76px)',
-    color: '#C8B89A',
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 'clamp(28px, 4vw, 52px)',
+    color: '#E2E8F0',
     textShadow: '0 2px 12px rgba(0,0,0,0.8)',
     margin: '4px 0 0 0',
     lineHeight: 1.1,
@@ -55,18 +55,18 @@ const S = {
   highScore: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 14,
-    color: '#C8B89A',
+    color: '#CBD5E1',
     marginTop: 8,
     opacity: 0.85,
   },
   btn: {
     marginTop: 24,
     padding: '16px 40px',
-    background: '#D4AF37',
-    color: '#1A0A00',
-    border: '2px solid #8B6914',
+    background: '#22D3EE',
+    color: '#06121A',
+    border: '2px solid #0E7490',
     borderRadius: 3,
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 18,
     fontWeight: 700,
     cursor: 'pointer',
@@ -75,51 +75,51 @@ const S = {
   },
   // Right 40%
   right: {
-    flex: '0 0 40%',
+    flex: '0 0 48%',
     display: 'flex',
     flexDirection: 'column',
     gap: 16,
   },
   rewardHeader: {
-    fontFamily: "'Cinzel', serif",
-    fontSize: 33,
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 42,
     fontWeight: 700,
-    color: '#D4AF37',
+    color: '#22D3EE',
     letterSpacing: '0.12em',
     textTransform: 'uppercase',
-    marginBottom: 4,
-    opacity: 0.8,
+    marginBottom: 8,
+    opacity: 0.9,
   },
   rewardCard: {
-    background: 'rgba(10, 6, 2, 0.72)',
-    border: '1px solid rgba(212, 175, 55, 0.35)',
-    borderRadius: 6,
-    padding: '20px 24px',
+    background: 'rgba(8, 14, 26, 0.78)',
+    border: '1px solid rgba(34, 211, 238, 0.35)',
+    borderRadius: 8,
+    padding: '32px 36px',
     display: 'flex',
     flexDirection: 'column',
-    gap: 8,
+    gap: 12,
   },
   rewardBadge: {
-    fontFamily: "'Cinzel', serif",
-    fontSize: 14,
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 16,
     fontWeight: 700,
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
-    padding: '3px 10px',
-    borderRadius: 2,
+    padding: '5px 14px',
+    borderRadius: 3,
     alignSelf: 'flex-start',
   },
   rewardTitle: {
-    fontFamily: "'MedievalSharp', 'Cinzel', serif",
-    fontSize: 'clamp(20px, 2.5vw, 28px)',
-    color: '#C8B89A',
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 'clamp(34px, 4.5vw, 52px)',
+    color: '#E2E8F0',
     margin: 0,
-    lineHeight: 1.3,
+    lineHeight: 1.15,
   },
   rewardDesc: {
     fontFamily: "'DM Mono', monospace",
-    fontSize: 20,
-    color: '#A09070',
+    fontSize: 24,
+    color: '#94A3B8',
     margin: 0,
     lineHeight: 1.6,
   },
@@ -153,8 +153,8 @@ export default function HomeScreen({ onStart }) {
       <div style={S.layout}>
         {/* Left: heading + CTA */}
         <div style={S.left}>
-          <h1 style={S.title}>One Does Not Simply...</h1>
-          <h2 style={S.subtitle}>...Dodge Saruman's Fire</h2>
+          <h1 style={S.title}>It Works On My Machine...</h1>
+          <h2 style={S.subtitle}>Dev vs QA</h2>
 
           {topScore && (
             <p style={S.highScore}>
@@ -166,62 +166,43 @@ export default function HomeScreen({ onStart }) {
             style={{
               ...S.btn,
               ...(btnHover
-                ? { background: '#E8C84A', transform: 'scale(1.02)' }
+                ? { background: '#67E8F9', transform: 'scale(1.02)' }
                 : {}),
             }}
             onMouseEnter={() => setBtnHover(true)}
             onMouseLeave={() => setBtnHover(false)}
             onClick={onStart}
           >
-            BEGIN YOUR QUEST →
+            PLAY NOW →
           </button>
         </div>
 
-        {/* Right: rewards */}
+        {/* Right: reward */}
         <div style={S.right}>
-          <p style={S.rewardHeader}>Rewards</p>
+          <p style={S.rewardHeader}>Reward</p>
 
-          {/* Reward 1 — Lucky Draw */}
-          <div style={S.rewardCard}>
-            <span
-              style={{
-                ...S.rewardBadge,
-                background: 'rgba(212,175,55,0.15)',
-                color: '#D4AF37',
-                border: '1px solid rgba(212,175,55,0.4)',
-              }}
-            >
-              Score &gt; 5
-            </span>
-            <h3 style={S.rewardTitle}>Enter the Lucky Draw</h3>
-            <p style={S.rewardDesc}>
-              Win the <strong style={{ color: '#C8B89A' }}>Rivendell Lego Set</strong> — score
-              more than 5 to get your name in the draw.
-            </p>
-          </div>
-
-          {/* Reward 2 — Top Score */}
+          {/* Top Score — Mac Mini M4 */}
           <div
             style={{
               ...S.rewardCard,
-              border: '1px solid rgba(212,175,55,0.65)',
-              background: 'rgba(20,12,2,0.8)',
+              border: '1px solid rgba(34,211,238,0.65)',
+              background: 'rgba(10,18,32,0.82)',
             }}
           >
             <span
               style={{
                 ...S.rewardBadge,
-                background: 'rgba(212,175,55,0.15)',
-                color: '#D4AF37',
-                border: '1px solid rgba(212,175,55,0.4)',
+                background: 'rgba(34,211,238,0.15)',
+                color: '#22D3EE',
+                border: '1px solid rgba(34,211,238,0.4)',
               }}
             >
               Highest Score
             </span>
-            <h3 style={S.rewardTitle}>Claude Max 5×</h3>
+            <h3 style={S.rewardTitle}>Mac Mini M4</h3>
             <p style={S.rewardDesc}>
-              <strong style={{ color: '#C8B89A' }}>3-month Claude Max 5×</strong> subscription
-              goes to the player with the highest score of the day.
+              The <strong style={{ color: '#E2E8F0' }}>Mac Mini M4</strong> goes to the
+              player with the highest score of the day.
             </p>
           </div>
         </div>

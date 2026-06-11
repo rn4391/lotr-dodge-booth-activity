@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import bgImg from '../assets/lotr-background.jpg';
+import bgImg from '../assets/background.jpg';
 import imagekitLogo from '../assets/ice-logo.png';
+import bugImg from '../assets/bug.png';
 
 const THRESHOLD = 5;
 
@@ -24,18 +25,18 @@ const S = {
   card: {
     position: 'relative',
     zIndex: 1,
-    background: 'rgba(255, 248, 220, 0.92)',
-    border: '2px solid #8B6914',
+    background: 'rgba(10, 16, 28, 0.92)',
+    border: '2px solid #0E7490',
     borderRadius: 4,
     padding: '40px 48px',
     maxWidth: 560,
     width: '90%',
-    color: '#2A1A00',
+    color: '#E2E8F0',
   },
   title: {
-    fontFamily: "'MedievalSharp', 'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 34,
-    color: '#5C3A00',
+    color: '#22D3EE',
     marginBottom: 28,
     textAlign: 'center',
   },
@@ -54,20 +55,20 @@ const S = {
     fontWeight: 600,
     paddingRight: 16,
     whiteSpace: 'nowrap',
-    color: '#2A1A00',
+    color: '#E2E8F0',
     paddingTop: 2,
   },
   desc: {
-    color: '#4A3200',
+    color: '#94A3B8',
   },
   note: {
     fontFamily: "'DM Mono', monospace",
     fontSize: 16,
-    color: '#7A5C20',
+    color: '#94A3B8',
     fontStyle: 'italic',
     marginTop: 20,
     textAlign: 'center',
-    borderTop: '1px solid rgba(139,105,20,0.3)',
+    borderTop: '1px solid rgba(34,211,238,0.25)',
     paddingTop: 14,
   },
   btn: {
@@ -75,11 +76,11 @@ const S = {
     width: '100%',
     marginTop: 20,
     padding: '14px',
-    background: '#D4AF37',
-    color: '#1A0A00',
-    border: '2px solid #8B6914',
+    background: '#22D3EE',
+    color: '#06121A',
+    border: '2px solid #0E7490',
     borderRadius: 3,
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontSize: 20,
     fontWeight: 700,
     cursor: 'pointer',
@@ -106,12 +107,19 @@ export default function InstructionScreen({ onStart }) {
     >
       <div style={S.overlay} />
       <div style={S.card}>
-        <h2 style={S.title}>The Rules of the Shire</h2>
+        <h2 style={S.title}>The Rules of Engagement</h2>
 
         <table style={S.table}>
           <tbody>
             <tr style={S.rowTop}>
-              <td style={S.key}>🔥 FIRE</td>
+              <td style={{ ...S.key, paddingTop: 4 }}>
+                <img
+                  src={bugImg}
+                  alt="Bug"
+                  style={{ width: 28, height: 28, verticalAlign: 'middle' }}
+                />
+                &nbsp;BUG
+              </td>
               <td style={S.desc}>Dodge to increase score</td>
             </tr>
             <tr style={S.rowTop}>
@@ -121,13 +129,17 @@ export default function InstructionScreen({ onStart }) {
                   alt="ImageKit"
                   style={{ width: 28, height: 28, verticalAlign: 'middle' }}
                 />
-                &nbsp;ICE
+                &nbsp;POWER UPS
               </td>
               <td style={S.desc}>Collect for bonus points</td>
             </tr>
             <tr style={S.rowTop}>
               <td style={S.key}>💀 GET HIT</td>
-              <td style={S.desc}>Game over</td>
+              <td style={S.desc}>Build fails — game over</td>
+            </tr>
+            <tr style={S.rowTop}>
+              <td style={S.key}>⌨️ SPACE</td>
+              <td style={S.desc}>Jump — hold longer to jump higher</td>
             </tr>
           </tbody>
         </table>
@@ -138,8 +150,8 @@ export default function InstructionScreen({ onStart }) {
 
         <button
           style={S.btn}
-          onMouseEnter={(e) => (e.target.style.background = '#E8C84A')}
-          onMouseLeave={(e) => (e.target.style.background = '#D4AF37')}
+          onMouseEnter={(e) => (e.target.style.background = '#67E8F9')}
+          onMouseLeave={(e) => (e.target.style.background = '#22D3EE')}
           onClick={onStart}
         >
           Start Game
