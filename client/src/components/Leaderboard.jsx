@@ -173,7 +173,7 @@ export default function Leaderboard({ onPlayAgain }) {
         <div style={S.prizesRow}>
           <div style={S.prizeCard}>
             <div style={S.prizeTitle}>🏆 Top Score Prize</div>
-            <div>Mac Mini M4 — to the highest scorer of the day</div>
+            <div>Win exciting rewards — to the top two players of the event</div>
             {topScore && (
               <div style={{ marginTop: 10, color: '#22D3EE', fontSize: 15 }}>
                 Current leader: {topScore.score} — {topScore.name}

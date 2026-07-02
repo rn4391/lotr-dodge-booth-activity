@@ -181,7 +181,7 @@ export default function HomeScreen({ onStart }) {
         <div style={S.right}>
           <p style={S.rewardHeader}>Reward</p>
 
-          {/* Top Score — Mac Mini M4 */}
+          {/* Top Score — Rewards */}
           <div
             style={{
               ...S.rewardCard,
@@ -199,10 +199,10 @@ export default function HomeScreen({ onStart }) {
             >
               Highest Score
             </span>
-            <h3 style={S.rewardTitle}>Mac Mini M4</h3>
+            <h3 style={S.rewardTitle}>Win Rewards</h3>
             <p style={S.rewardDesc}>
-              The <strong style={{ color: '#E2E8F0' }}>Mac Mini M4</strong> goes to the
-              player with the highest score of the day.
+              Exciting <strong style={{ color: '#E2E8F0' }}>rewards</strong> go to the
+              top two players of the event.
             </p>
           </div>
         </div>
