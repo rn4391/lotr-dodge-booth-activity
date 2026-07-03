@@ -37,10 +37,10 @@ router.post('/', async (req, res) => {
 // GET /api/scores/leaderboard — top 10 by score desc, timestamp asc
 router.get('/leaderboard', async (req, res) => {
   try {
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    // 2-day event: include scores from the last 48 hours
+    const windowStart = new Date(Date.now() - 48 * 60 * 60 * 1000);
 
-    const scores = await Score.find({ timestamp: { $gte: todayStart } })
+    const scores = await Score.find({ timestamp: { $gte: windowStart } })
       .sort({ score: -1, timestamp: 1 })
       .limit(10)
       .select('name score multiplierReached fireballsDodged imagekitCollected timestamp');
@@ -54,10 +54,10 @@ router.get('/leaderboard', async (req, res) => {
 // GET /api/scores/stats
 router.get('/stats', async (req, res) => {
   try {
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    // 2-day event: include scores from the last 48 hours
+    const windowStart = new Date(Date.now() - 48 * 60 * 60 * 1000);
 
-    const scores = await Score.find({ timestamp: { $gte: todayStart } });
+    const scores = await Score.find({ timestamp: { $gte: windowStart } });
     const totalPlayers = scores.length;
     const averageScore =
       totalPlayers > 0
@@ -77,7 +77,7 @@ router.get('/stats', async (req, res) => {
         awarenessBreakdown.didNotKnow++;
     });
 
-    const topScoreDoc = await Score.findOne({ timestamp: { $gte: todayStart } })
+    const topScoreDoc = await Score.findOne({ timestamp: { $gte: windowStart } })
       .sort({ score: -1 })
       .select('name score');
 
