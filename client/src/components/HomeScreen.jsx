@@ -1,5 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import bgImg from '../assets/background.jpg';
+import divoomImg from '../assets/prize-divoom.jpg';
+import claudeLogo from '../assets/prize-claude-logo.svg';
+
+const REWARDS = [
+  {
+    badge: '1st Prize',
+    name: 'Divoom Times Gate Pixel Art Info Display Screens',
+    desc: 'Pixel Art Info Display with 5 Smart LCD Screens',
+    image: divoomImg,
+  },
+  {
+    badge: '2nd Prize',
+    name: 'Claude Max 5x (worth €270)',
+    desc: '3 months subscription — worth €270',
+    image: claudeLogo,
+  },
+];
 
 const S = {
   root: {
@@ -76,8 +93,10 @@ const S = {
   // Right 40%
   right: {
     flex: '0 0 48%',
+    minWidth: 0,
     display: 'flex',
     flexDirection: 'column',
+    alignSelf: 'flex-start',
     gap: 16,
   },
   rewardHeader: {
@@ -123,12 +142,65 @@ const S = {
     margin: 0,
     lineHeight: 1.6,
   },
+  fadeCard: {
+    position: 'relative',
+    width: '100%',
+    height: 220,
+    background: 'rgba(8, 14, 26, 0.78)',
+    border: '1px solid rgba(34, 211, 238, 0.35)',
+    borderRadius: 8,
+    boxSizing: 'border-box',
+    overflow: 'hidden',
+  },
+  fadeSlide: {
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 16,
+    boxSizing: 'border-box',
+    transition: 'opacity 0.9s ease',
+  },
+  fadeImgWrap: {
+    flex: '1 1 auto',
+    minHeight: 0,
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fadeImg: {
+    maxWidth: '100%',
+    maxHeight: '100%',
+    objectFit: 'contain',
+  },
+  fadeBadge: {
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 12,
+    fontWeight: 700,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: '#22D3EE',
+  },
+  fadeName: {
+    fontFamily: "'Orbitron', sans-serif",
+    fontSize: 15,
+    fontWeight: 700,
+    color: '#E2E8F0',
+    margin: 0,
+    textAlign: 'center',
+    lineHeight: 1.3,
+  },
 };
 
 export default function HomeScreen({ onStart }) {
   const [topScore, setTopScore] = useState(null);
   const [btnHover, setBtnHover] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [rewardIndex, setRewardIndex] = useState(0);
 
   useEffect(() => {
     setVisible(true);
@@ -138,6 +210,13 @@ export default function HomeScreen({ onStart }) {
         if (d.topScore && d.topScore.score > 0) setTopScore(d.topScore);
       })
       .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setRewardIndex((i) => (i + 1) % REWARDS.length);
+    }, 3500);
+    return () => clearInterval(id);
   }, []);
 
   return (
@@ -204,6 +283,25 @@ export default function HomeScreen({ onStart }) {
               Exciting <strong style={{ color: '#E2E8F0' }}>rewards</strong> go to the
               top two players of the event.
             </p>
+          </div>
+
+          {/* Fading reward showcase */}
+          <div style={S.fadeCard}>
+            {REWARDS.map((reward, i) => (
+              <div
+                key={reward.name}
+                style={{
+                  ...S.fadeSlide,
+                  opacity: i === rewardIndex ? 1 : 0,
+                }}
+              >
+                <div style={S.fadeImgWrap}>
+                  <img src={reward.image} alt={reward.name} style={S.fadeImg} />
+                </div>
+                <span style={S.fadeBadge}>{reward.badge}</span>
+                <p style={S.fadeName}>{reward.name}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
