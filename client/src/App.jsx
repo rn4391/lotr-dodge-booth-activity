@@ -69,7 +69,7 @@ function Game() {
             letterSpacing: '0.06em',
           }}
         >
-          Dev vs QA
+          Fire Dodge
         </span>
         <span
           style={{

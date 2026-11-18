@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import bgImg from '../assets/background.jpg';
-import divoomImg from '../assets/prize-divoom.jpg';
-import claudeLogo from '../assets/prize-claude-logo.svg';
 
-const REWARDS = [
-  {
-    badge: '1st Prize',
-    name: 'Divoom Times Gate Pixel Art Info Display Screens',
-    desc: 'Pixel Art Info Display with 5 Smart LCD Screens',
-    image: divoomImg,
-  },
-  {
-    badge: '2nd Prize',
-    name: 'Claude Max 5x (worth €270)',
-    desc: '3 months subscription — worth €270',
-    image: claudeLogo,
-  },
-];
+const CYAN = '#22D3EE';
+const CYAN_LIGHT = '#67E8F9';
+
+const KEYFRAMES = `
+@keyframes fd-glow {
+  0%, 100% { text-shadow: 0 0 18px rgba(34,211,238,0.55), 0 0 48px rgba(34,211,238,0.25); }
+  50%      { text-shadow: 0 0 28px rgba(34,211,238,0.85), 0 0 80px rgba(34,211,238,0.45); }
+}
+@keyframes fd-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34,211,238,0.55); }
+  50%      { box-shadow: 0 0 0 14px rgba(34,211,238,0); }
+}
+`;
 
 const S = {
   root: {
@@ -27,172 +24,131 @@ const S = {
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    overflow: 'hidden',
   },
-  overlay: {
+  // Darkens the scene behind the game title, fading toward the prize panel
+  leftShade: {
     position: 'absolute',
     inset: 0,
-    background: 'rgba(0,0,0,0.55)',
+    background:
+      'linear-gradient(90deg, rgba(4,8,16,0.82) 0%, rgba(4,8,16,0.6) 45%, rgba(4,8,16,0.35) 100%)',
   },
-  layout: {
+
+  // ── Left: game name + CTA
+  left: {
     position: 'relative',
     zIndex: 1,
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 1200,
-    padding: '0 48px',
-    gap: 32,
-  },
-  // Left 60%
-  left: {
-    flex: '0 0 52%',
+    flex: '1 1 55%',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'flex-start',
-    gap: 16,
+    padding: '0 4vw 0 6vw',
+    gap: 'clamp(12px, 2vh, 24px)',
   },
-  title: {
+  eyebrow: {
+    fontFamily: "'DM Mono', monospace",
+    fontSize: 'clamp(13px, 1.1vw, 18px)',
+    color: CYAN,
+    letterSpacing: '0.35em',
+    textTransform: 'uppercase',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 14,
+  },
+  eyebrowRule: {
+    width: 48,
+    height: 2,
+    background: CYAN,
+    display: 'inline-block',
+  },
+  gameName: {
     fontFamily: "'Orbitron', sans-serif",
-    fontSize: 'clamp(16px, 2vw, 24px)',
-    color: '#22D3EE',
-    lineHeight: 1.1,
-    textShadow: '0 2px 20px rgba(0,0,0,0.8)',
+    fontWeight: 900,
+    fontSize: 'clamp(44px, 5.4vw, 110px)',
+    lineHeight: 0.92,
+    letterSpacing: '0.02em',
+    color: '#F1F5F9',
+    textTransform: 'uppercase',
+    textShadow: '0 4px 30px rgba(0,0,0,0.85)',
     margin: 0,
   },
-  subtitle: {
-    fontFamily: "'Orbitron', sans-serif",
-    fontSize: 'clamp(28px, 4vw, 52px)',
-    color: '#E2E8F0',
-    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
-    margin: '4px 0 0 0',
-    lineHeight: 1.1,
+  gameNameAccent: {
+    display: 'block',
+    color: CYAN,
   },
   highScore: {
     fontFamily: "'DM Mono', monospace",
-    fontSize: 14,
+    fontSize: 'clamp(14px, 1.2vw, 20px)',
     color: '#CBD5E1',
-    marginTop: 8,
-    opacity: 0.85,
+    background: 'rgba(8,14,26,0.7)',
+    border: '1px solid rgba(34,211,238,0.3)',
+    borderRadius: 4,
+    padding: '8px 14px',
   },
   btn: {
-    marginTop: 24,
-    padding: '16px 40px',
-    background: '#22D3EE',
+    marginTop: 'clamp(8px, 2vh, 24px)',
+    padding: 'clamp(14px, 1.6vw, 22px) clamp(32px, 3.4vw, 60px)',
+    background: CYAN,
     color: '#06121A',
     border: '2px solid #0E7490',
     borderRadius: 3,
     fontFamily: "'Orbitron', sans-serif",
-    fontSize: 18,
+    fontSize: 'clamp(18px, 1.6vw, 28px)',
     fontWeight: 700,
     cursor: 'pointer',
-    letterSpacing: '0.06em',
-    transition: 'transform 0.15s ease, background 0.15s ease',
-  },
-  // Right 40%
-  right: {
-    flex: '0 0 48%',
-    minWidth: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    alignSelf: 'flex-start',
-    gap: 16,
-  },
-  rewardHeader: {
-    fontFamily: "'Orbitron', sans-serif",
-    fontSize: 42,
-    fontWeight: 700,
-    color: '#22D3EE',
-    letterSpacing: '0.12em',
-    textTransform: 'uppercase',
-    marginBottom: 8,
-    opacity: 0.9,
-  },
-  rewardCard: {
-    background: 'rgba(8, 14, 26, 0.78)',
-    border: '1px solid rgba(34, 211, 238, 0.35)',
-    borderRadius: 8,
-    padding: '32px 36px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 12,
-  },
-  rewardBadge: {
-    fontFamily: "'Orbitron', sans-serif",
-    fontSize: 16,
-    fontWeight: 700,
-    letterSpacing: '0.1em',
-    textTransform: 'uppercase',
-    padding: '5px 14px',
-    borderRadius: 3,
-    alignSelf: 'flex-start',
-  },
-  rewardTitle: {
-    fontFamily: "'Orbitron', sans-serif",
-    fontSize: 'clamp(34px, 4.5vw, 52px)',
-    color: '#E2E8F0',
-    margin: 0,
-    lineHeight: 1.15,
-  },
-  rewardDesc: {
-    fontFamily: "'DM Mono', monospace",
-    fontSize: 24,
-    color: '#94A3B8',
-    margin: 0,
-    lineHeight: 1.6,
-  },
-  fadeCard: {
-    position: 'relative',
-    width: '100%',
-    height: 220,
-    background: 'rgba(8, 14, 26, 0.78)',
-    border: '1px solid rgba(34, 211, 238, 0.35)',
-    borderRadius: 8,
-    boxSizing: 'border-box',
-    overflow: 'hidden',
-  },
-  fadeSlide: {
-    position: 'absolute',
-    inset: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    padding: 16,
-    boxSizing: 'border-box',
-    transition: 'opacity 0.9s ease',
-  },
-  fadeImgWrap: {
-    flex: '1 1 auto',
-    minHeight: 0,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fadeImg: {
-    maxWidth: '100%',
-    maxHeight: '100%',
-    objectFit: 'contain',
-  },
-  fadeBadge: {
-    fontFamily: "'Orbitron', sans-serif",
-    fontSize: 12,
-    fontWeight: 700,
     letterSpacing: '0.08em',
-    textTransform: 'uppercase',
-    color: '#22D3EE',
+    transition: 'transform 0.15s ease, background 0.15s ease',
+    animation: 'fd-pulse 2s ease-out infinite',
   },
-  fadeName: {
+
+  // ── Right: prize overlay panel
+  right: {
+    position: 'relative',
+    zIndex: 1,
+    flex: '0 0 45%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    padding: '0 4vw',
+    background: 'rgba(2,5,10,0.8)',
+    backdropFilter: 'blur(6px)',
+    WebkitBackdropFilter: 'blur(6px)',
+    borderLeft: `3px solid ${CYAN}`,
+    boxShadow: '-24px 0 60px rgba(0,0,0,0.5)',
+  },
+  playWin: {
     fontFamily: "'Orbitron', sans-serif",
-    fontSize: 15,
     fontWeight: 700,
-    color: '#E2E8F0',
+    fontSize: 'clamp(30px, 4vw, 72px)',
+    color: '#F1F5F9',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    lineHeight: 1,
     margin: 0,
-    textAlign: 'center',
-    lineHeight: 1.3,
+  },
+  prizeName: {
+    fontFamily: "'Orbitron', sans-serif",
+    fontWeight: 900,
+    fontSize: 'clamp(44px, 5.4vw, 110px)',
+    color: CYAN,
+    textTransform: 'uppercase',
+    lineHeight: 0.95,
+    margin: 'clamp(10px, 1.6vh, 20px) 0 0 0',
+    animation: 'fd-glow 2.4s ease-in-out infinite',
+  },
+  divider: {
+    width: 96,
+    height: 3,
+    background: CYAN,
+    margin: 'clamp(24px, 4vh, 44px) 0 clamp(14px, 2vh, 22px)',
+  },
+  prizeNote: {
+    fontFamily: "'DM Mono', monospace",
+    fontSize: 'clamp(15px, 1.4vw, 24px)',
+    color: '#94A3B8',
+    lineHeight: 1.5,
+    margin: 0,
   },
 };
 
@@ -200,7 +156,6 @@ export default function HomeScreen({ onStart }) {
   const [topScore, setTopScore] = useState(null);
   const [btnHover, setBtnHover] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [rewardIndex, setRewardIndex] = useState(0);
 
   useEffect(() => {
     setVisible(true);
@@ -212,13 +167,6 @@ export default function HomeScreen({ onStart }) {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      setRewardIndex((i) => (i + 1) % REWARDS.length);
-    }, 3500);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <div
       style={{
@@ -227,83 +175,53 @@ export default function HomeScreen({ onStart }) {
         transition: 'opacity 0.4s ease',
       }}
     >
-      <div style={S.overlay} />
+      <style>{KEYFRAMES}</style>
+      <div style={S.leftShade} />
 
-      <div style={S.layout}>
-        {/* Left: heading + CTA */}
-        <div style={S.left}>
-          <h1 style={S.title}>It Works On My Machine...</h1>
-          <h2 style={S.subtitle}>Dev vs QA</h2>
+      {/* Left: game name + CTA */}
+      <div style={S.left}>
+        <span style={S.eyebrow}>
+          <span style={S.eyebrowRule} />
+          Arcade Challenge
+        </span>
 
-          {topScore && (
-            <p style={S.highScore}>
-              Today's best: {topScore.score} pts — {topScore.name}
-            </p>
-          )}
+        <h1 style={S.gameName}>
+          Fire
+          <span style={S.gameNameAccent}>Dodge</span>
+        </h1>
 
-          <button
-            style={{
-              ...S.btn,
-              ...(btnHover
-                ? { background: '#67E8F9', transform: 'scale(1.02)' }
-                : {}),
-            }}
-            onMouseEnter={() => setBtnHover(true)}
-            onMouseLeave={() => setBtnHover(false)}
-            onClick={onStart}
-          >
-            PLAY NOW →
-          </button>
-        </div>
+        {topScore && (
+          <p style={S.highScore}>
+            Today's best: <strong style={{ color: CYAN }}>{topScore.score} pts</strong> —{' '}
+            {topScore.name}
+          </p>
+        )}
 
-        {/* Right: reward */}
-        <div style={S.right}>
-          <p style={S.rewardHeader}>Reward</p>
+        <button
+          style={{
+            ...S.btn,
+            ...(btnHover ? { background: CYAN_LIGHT, transform: 'scale(1.03)' } : {}),
+          }}
+          onMouseEnter={() => setBtnHover(true)}
+          onMouseLeave={() => setBtnHover(false)}
+          onClick={onStart}
+        >
+          PLAY NOW →
+        </button>
+      </div>
 
-          {/* Top Score — Rewards */}
-          <div
-            style={{
-              ...S.rewardCard,
-              border: '1px solid rgba(34,211,238,0.65)',
-              background: 'rgba(10,18,32,0.82)',
-            }}
-          >
-            <span
-              style={{
-                ...S.rewardBadge,
-                background: 'rgba(34,211,238,0.15)',
-                color: '#22D3EE',
-                border: '1px solid rgba(34,211,238,0.4)',
-              }}
-            >
-              Highest Score
-            </span>
-            <h3 style={S.rewardTitle}>Win Rewards</h3>
-            <p style={S.rewardDesc}>
-              Exciting <strong style={{ color: '#E2E8F0' }}>rewards</strong> go to the
-              top two players of the event.
-            </p>
-          </div>
-
-          {/* Fading reward showcase */}
-          <div style={S.fadeCard}>
-            {REWARDS.map((reward, i) => (
-              <div
-                key={reward.name}
-                style={{
-                  ...S.fadeSlide,
-                  opacity: i === rewardIndex ? 1 : 0,
-                }}
-              >
-                <div style={S.fadeImgWrap}>
-                  <img src={reward.image} alt={reward.name} style={S.fadeImg} />
-                </div>
-                <span style={S.fadeBadge}>{reward.badge}</span>
-                <p style={S.fadeName}>{reward.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Right: prize */}
+      <div style={S.right}>
+        <h2 style={S.playWin}>Play and Win</h2>
+        <p style={S.prizeName}>
+          Meta
+          <br />
+          <span style={{ whiteSpace: 'nowrap' }}>Quest 3S</span>
+        </p>
+        <div style={S.divider} />
+        <p style={S.prizeNote}>
+          Top the leaderboard and take it home.
+        </p>
       </div>
     </div>
   );
