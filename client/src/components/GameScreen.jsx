@@ -89,7 +89,6 @@ export default function GameScreen({ onGameEnd }) {
       lastSpawnTime: performance.now(),
       rafId: null,
       dead: false,
-      topScore: null,
     };
   }, []);
 
@@ -139,16 +138,6 @@ export default function GameScreen({ onGameEnd }) {
       .then(([bg, dev, qa, bug, imagekit]) => {
         const imgs = { bg, dev, qa, fireball: bug, imagekit };
         stateRef.current = initState(canvas, imgs);
-
-        // Fetch top score
-        fetch('/api/scores/stats')
-          .then((r) => r.json())
-          .then((d) => {
-            if (stateRef.current && d.topScore && d.topScore.score > 0) {
-              stateRef.current.topScore = d.topScore;
-            }
-          })
-          .catch(() => {});
 
         startGame();
       })
@@ -341,18 +330,6 @@ export default function GameScreen({ onGameEnd }) {
         ctx.font = "bold 22px 'Orbitron', sans-serif";
         ctx.fillStyle = '#22D3EE';
         ctx.fillText(`×${multiplier}`, canvas.width / 2, 50);
-      }
-
-      // Top score
-      if (s.topScore) {
-        ctx.textAlign = 'right';
-        ctx.font = "14px 'DM Mono', monospace";
-        ctx.fillStyle = '#CBD5E1';
-        ctx.fillText(
-          `Best: ${s.topScore.score} — ${s.topScore.name}`,
-          canvas.width - 24,
-          46
-        );
       }
 
       ctx.shadowBlur = 0;

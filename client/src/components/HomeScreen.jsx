@@ -77,15 +77,6 @@ const S = {
     display: 'block',
     color: CYAN,
   },
-  highScore: {
-    fontFamily: "'DM Mono', monospace",
-    fontSize: 'clamp(14px, 1.2vw, 20px)',
-    color: '#CBD5E1',
-    background: 'rgba(8,14,26,0.7)',
-    border: '1px solid rgba(34,211,238,0.3)',
-    borderRadius: 4,
-    padding: '8px 14px',
-  },
   btn: {
     marginTop: 'clamp(8px, 2vh, 24px)',
     padding: 'clamp(14px, 1.6vw, 22px) clamp(32px, 3.4vw, 60px)',
@@ -153,18 +144,11 @@ const S = {
 };
 
 export default function HomeScreen({ onStart }) {
-  const [topScore, setTopScore] = useState(null);
   const [btnHover, setBtnHover] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setVisible(true);
-    fetch('/api/scores/stats')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.topScore && d.topScore.score > 0) setTopScore(d.topScore);
-      })
-      .catch(() => {});
   }, []);
 
   return (
@@ -189,13 +173,6 @@ export default function HomeScreen({ onStart }) {
           Fire
           <span style={S.gameNameAccent}>Dodge</span>
         </h1>
-
-        {topScore && (
-          <p style={S.highScore}>
-            Today's best: <strong style={{ color: CYAN }}>{topScore.score} pts</strong> —{' '}
-            {topScore.name}
-          </p>
-        )}
 
         <button
           style={{
